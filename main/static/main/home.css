@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.tuts {
+  margin: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  background: rgb(207, 201, 201);
+}
+.title {
+  background: teal;
+  border-radius: 5px;
+  padding: 10px;
+}
+.heading {
+  font-size: 4rem;
+  justify-content: center;
+  text-align: center;
+  margin: 0 auto;
+}
