@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Tutorial
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 
@@ -26,3 +26,33 @@ def register(request):
                 messages.error(request, f"{msg}:{form.error_messages[msg]}")
     form = UserCreationForm
     return render(request, 'main/register.html', {'form': form})
+
+
+def logout_request(request):
+    logout(request)
+    messages.info(request, "logged out successfully")
+    return redirect('/')
+
+
+def login_request(request):
+    if(request.method == "POST"):
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password")
+            user = authenticate(username=username, password=password)
+            if(user is not None):
+                messages.success(request, f"Welcome! {username}")
+                login(request, user)
+                return redirect("/")
+            else:
+                for msg in form.error_messages:
+                    messages.error(
+                        request, f"{msg}:{form.error_messages[msg]}")
+        else:
+            for msg in form.error_messages:
+                messages.error(
+                    request, f"{msg}:{form.error_messages[msg]}")
+
+    form = AuthenticationForm()
+    return render(request, "main/login.html", {"form": form})
