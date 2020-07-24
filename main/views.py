@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Tutorial
+from .models import Tutorial, TutorialCategory, TutorialSeries
 from django.contrib.auth.forms import AuthenticationForm
 # from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 # when we update our form fields in forms.py we wil import that form instead of usercreationform and use that class
@@ -8,11 +8,27 @@ from .forms import NewUserForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 
+
 # Create your views here.
+def single_slug(request, single_slug):
+    categories = [c.category_slug for c in TutorialCategory.objects.all()]
+    if single_slug in categories:
+        matching_series = TutorialSeries.objects.filter(
+            tutorial_category__category_slug=single_slug)
+        series_urls = {}
+        for m in matching_series.all():
+            part_one = Tutorial.objects.filter(
+                tutorial_series__tutorial_series=m.tutorial_series).earliest("tutorial_published")
+            series_urls[m] = part_one.tutorial_slug
+        return render(request, "main/category.html", {"part_ones": series_urls})
+    tutorials = [t.tutorial_slug for t in Tutorial.objects.all()]
+    if single_slug in tutorials:
+        return HttpResponse(f"{single_slug} is a tutorial!!")
+    return HttpResponse(f"{single_slug} does not correspond to anything")
 
 
 def home(request):
-    return render(request, 'main/home.html', {"tutorials": Tutorial.objects.all()})
+    return render(request, 'main/categories.html', {"categories": TutorialCategory.objects.all})
 
 
 def register(request):
