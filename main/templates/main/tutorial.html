@@ -1,0 +1,26 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}
+Tutorials
+{% endblock title %}
+{% block css %}
+{% endblock css %}
+{% block body %}
+  <div class="container">
+    <div class="row">
+      <h1 class="heading">Tutorials Blogs</h1>
+    </div>
+    <div class="row">
+      {% for tutorial in tutorials %}
+      <div class="col-12  tuts">
+
+        <h1 class="title">{{tutorial.tutorial_title}}</h1>
+        <h6>{{tutorial.tutorial_published}}</h6>
+        <p>{{tutorial.tutorial_content|safe}}</p>
+      </div>
+      <hr>
+
+      {% endfor %}
+    </div>
+  </div>
+{% endblock body %}
